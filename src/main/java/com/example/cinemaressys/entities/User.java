@@ -1,0 +1,34 @@
+package com.example.cinemaressys.entities;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.sql.Date;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "users")
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int UserId;
+    private String name;
+    private String surname;
+    private String email;
+    private String password;
+    private LocalDate dateOfBirth;
+    private boolean isAdmin;
+
+    public User(String name, String surname, String email, String password, LocalDate dateOfBirth) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.isAdmin = false;
+    }
+    public User(){
+    }
+
+}

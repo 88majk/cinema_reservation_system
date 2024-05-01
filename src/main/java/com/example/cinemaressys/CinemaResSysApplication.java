@@ -21,7 +21,7 @@ public class CinemaResSysApplication {
     public void checkConnection(){
         try{
             dataSource.getConnection();
-            System.out.println("Nice");
+            System.out.println("Successfully connected to the database");
         } catch (Exception e){
             System.err.println("Error" + e.getMessage());
         }
