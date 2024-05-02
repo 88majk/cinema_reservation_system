@@ -2,8 +2,10 @@ package com.example.cinemaressys.services;
 
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
+import com.example.cinemaressys.entities.Role;
 import com.example.cinemaressys.entities.User;
 import com.example.cinemaressys.exception.MyException;
+import com.example.cinemaressys.repositories.RoleRepositories;
 import com.example.cinemaressys.repositories.UserRepositories;
 import com.example.cinemaressys.security.PasswordEncoder;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService{
     final private UserRepositories userRepositories;
+    final private RoleRepositories roleRepositories;
     @Override
     public void registerUser(UserRegisterRequestDto userRegisterRequestDto) {
         if (userRepositories.existsByEmail(userRegisterRequestDto.getEmail())){
@@ -21,12 +24,14 @@ public class UserServiceImpl implements UserService{
 
         try{
             String hashPassword = PasswordEncoder.encodePassword(userRegisterRequestDto.getPassword());
+            Role defaultRole = roleRepositories.findByName("User");
 
             userRepositories.save(new User(userRegisterRequestDto.getName(),
                     userRegisterRequestDto.getSurname(),
                     userRegisterRequestDto.getEmail(),
                     hashPassword,
-                    userRegisterRequestDto.getDateOfBirth()
+                    userRegisterRequestDto.getDateOfBirth(),
+                    defaultRole
             ));
         }
         catch (Exception e){
