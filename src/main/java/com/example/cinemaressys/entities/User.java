@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int UserId;
+    private int userId;
     private String name;
     private String surname;
     private String email;
@@ -20,13 +20,18 @@ public class User {
     private LocalDate dateOfBirth;
     private boolean isAdmin;
 
-    public User(String name, String surname, String email, String password, LocalDate dateOfBirth) {
+    @ManyToOne
+    @JoinColumn(name = "RoleId")
+    private Role role;
+
+    public User(String name, String surname, String email, String password, LocalDate dateOfBirth, Role role) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.isAdmin = false;
+        this.role = role;
     }
     public User(){
     }

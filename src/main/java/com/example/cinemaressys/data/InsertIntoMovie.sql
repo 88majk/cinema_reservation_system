@@ -1,0 +1,7 @@
+INSERT INTO [CinemaResSys].[dbo].[movie] 
+VALUES
+('Forrest Gump is a 1994 American comedy-drama film directed by Robert Zemeckis and written by Eric Roth. It is based on the 1986 novel of the same name by Winston Groom and stars Tom Hanks, Robin Wright, Gary Sinise, and Sally Field.', 'Robert Zemeckis', 142, 'Forrest Gump', 'USA', '1994-07-06', 12),
+('Inception is a 2010 science fiction action film directed by Christopher Nolan. It stars Leonardo DiCaprio as a professional thief who steals information by infiltrating the subconscious of his targets.', 'Christopher Nolan', 148, 'Inception', 'USA', '2010-07-16', 14),
+('The Matrix is a 1999 science fiction action film written and directed by the Wachowskis. It is the first installment in The Matrix film series, starring Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano.', 'The Wachowskis', 136, 'The Matrix', 'USA', '1999-03-31', 14),
+('The Silence of the Lambs is a 1991 American psychological horror film directed by Jonathan Demme and written by Ted Tally, adapted from Thomas Harris''s 1988 novel of the same name.', 'Jonathan Demme', 118, 'The Silence of the Lambs', 'USA', '1991-02-14', 18),
+('The Green Mile is a 1999 American fantasy crime drama film directed by Frank Darabont, based on the Stephen King novel.', 'Frank Darabont', 189, 'The Green Mile', 'USA', '1999-12-10', 16)
