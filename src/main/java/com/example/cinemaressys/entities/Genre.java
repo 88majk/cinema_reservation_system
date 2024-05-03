@@ -1,5 +1,6 @@
 package com.example.cinemaressys.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,7 +16,9 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int genreId;
     private String name;
-    @ManyToMany(mappedBy = "genres")
+
+    @ManyToMany(mappedBy = "movieGenres")
+    @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
     public Genre(){
