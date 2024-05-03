@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name= "cinemas")
 @Data
@@ -18,7 +21,11 @@ public class Cinema {
     private String phoneNumber;
     private String emailContact;
 
-    public Cinema(String address, String name, String localization, String phoneNumber, String emailContact) {
+    @OneToMany(mappedBy = "cinema")
+    private Set<CinemaHall> halls = new HashSet<>();
+
+    public Cinema(String address, String name, String localization, String phoneNumber,
+                  String emailContact) {
         this.address = address;
         this.name = name;
         this.localization = localization;

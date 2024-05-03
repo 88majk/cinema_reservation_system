@@ -26,10 +26,11 @@ public class Movie {
             name = "movie_genres",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genres = new HashSet<>();
+    private Set<Genre> movieGenres = new HashSet<>();
+
 
     public Movie(String name, String description, LocalDate releaseDate, int minimumAge, int duration,
-                 String productionCountry, String director, Set<Genre> genres) {
+                 String productionCountry, String director, Set<Genre> movieGenres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -37,9 +38,10 @@ public class Movie {
         this.duration = duration;
         this.productionCountry = productionCountry;
         this.director = director;
-        this.genres = genres;
+        this.movieGenres = movieGenres;
     }
 
     public Movie(){
     }
+
 }
