@@ -1,4 +1,4 @@
-package com.example.cinemaressys.services;
+package com.example.cinemaressys.services.cinema;
 
 import com.example.cinemaressys.dtos.cinema.CinemaRequestDto;
 import com.example.cinemaressys.dtos.cinema.CinemaResponseDto;
