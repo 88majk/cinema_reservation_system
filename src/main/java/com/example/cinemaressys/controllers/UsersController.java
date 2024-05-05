@@ -1,7 +1,5 @@
 package com.example.cinemaressys.controllers;
 
-import com.example.cinemaressys.dtos.jwt.JwtClaims;
-import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
 import com.example.cinemaressys.exception.MyException;
@@ -10,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.cinemaressys.entities.User;
-import com.example.cinemaressys.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/users")
@@ -38,27 +34,13 @@ public class UsersController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try{
-            User user = userService.loginUser(userLoginRequestDto);
-            String token = JwtTokenProvider.generateToken(user);
-            return ResponseEntity.ok().body(token);
+            userService.loginUser(userLoginRequestDto);
+            return ResponseEntity.ok().body("User login successfully!");
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/testToken")
-    public ResponseEntity<?> test(@RequestBody TokenRequestDto token) {
-        try{
-            JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token.getToken());
-            return ResponseEntity.ok().body(jwtClaims.getUserId()+" "+jwtClaims.getRole());
-        } catch(MyException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+                    .body("An unexpected error occurred during login, please try again later.");
         }
     }
 }
