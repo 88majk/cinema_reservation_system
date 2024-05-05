@@ -3,7 +3,7 @@ package com.example.cinemaressys.controllers;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
 import com.example.cinemaressys.exception.MyException;
-import com.example.cinemaressys.services.UserService;
+import com.example.cinemaressys.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

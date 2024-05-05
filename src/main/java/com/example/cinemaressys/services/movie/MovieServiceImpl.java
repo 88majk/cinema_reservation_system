@@ -1,11 +1,11 @@
-package com.example.cinemaressys.services.implementations;
+package com.example.cinemaressys.services.movie;
 
 import com.example.cinemaressys.dtos.movie.MovieRequestDto;
 import com.example.cinemaressys.dtos.movie.MovieResponseDto;
 import com.example.cinemaressys.entities.Genre;
 import com.example.cinemaressys.entities.Movie;
 import com.example.cinemaressys.repositories.MovieRepositories;
-import com.example.cinemaressys.services.MovieService;
+import com.example.cinemaressys.services.movie.MovieService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

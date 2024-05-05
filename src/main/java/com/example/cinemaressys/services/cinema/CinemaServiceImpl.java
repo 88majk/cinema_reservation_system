@@ -1,10 +1,11 @@
-package com.example.cinemaressys.services.implementations;
+package com.example.cinemaressys.services.cinema;
 
 import com.example.cinemaressys.dtos.cinema.CinemaRequestDto;
 import com.example.cinemaressys.dtos.cinema.CinemaResponseDto;
 import com.example.cinemaressys.entities.Cinema;
 import com.example.cinemaressys.repositories.CinemaRepositories;
-import com.example.cinemaressys.services.CinemaService;
+import com.example.cinemaressys.services.access.AccessService;
+import com.example.cinemaressys.services.access.AccessServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,23 +18,26 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CinemaServiceImpl implements CinemaService {
     private final CinemaRepositories cinemaRepository;
+    private final AccessServiceImpl accessServiceImpl;
 
     @Override
     public void addCinema(CinemaRequestDto requestDto) {
-        cinemaRepository.save(new Cinema(requestDto.getAddress(),
+        Cinema cinema = new Cinema(requestDto.getAddress(),
                 requestDto.getName(),
                 requestDto.getLocalization(),
                 requestDto.getPhoneNumber(),
-                requestDto.getEmailContact()));
+                requestDto.getEmailContact());
+        cinemaRepository.save(cinema);
+        accessServiceImpl.addAdminToNewCinema(cinema);
     }
 
     @Override
     public List<CinemaResponseDto> getAllCinemas() {
         return cinemaRepository.findAll().stream()
                 .map(cinema -> {
-                    Set<String> halls = cinemaRepository.getHallsByCinemaId(cinema.getId());
+                    Set<String> halls = cinemaRepository.getHallsByCinemaId(cinema.getCinemaId());
                     return new CinemaResponseDto(
-                            cinema.getId(), cinema.getAddress(),
+                            cinema.getCinemaId(), cinema.getAddress(),
                             cinema.getName(), cinema.getLocalization(),
                             cinema.getPhoneNumber(), cinema.getEmailContact(),
                             halls);
@@ -48,7 +52,7 @@ public class CinemaServiceImpl implements CinemaService {
                 {
                     Set<String> halls = cinemaRepository.getHallsByCinemaId(id);
                     return new CinemaResponseDto(
-                            cinema.getId(),
+                            cinema.getCinemaId(),
                             cinema.getAddress(),
                             cinema.getName(),
                             cinema.getLocalization(),

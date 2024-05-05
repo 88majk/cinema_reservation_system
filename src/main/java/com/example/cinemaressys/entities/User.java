@@ -18,7 +18,6 @@ public class User {
     private String email;
     private String password;
     private LocalDate dateOfBirth;
-    private boolean isAdmin;
 
     @ManyToOne
     @JoinColumn(name = "RoleId")
@@ -30,7 +29,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
-        this.isAdmin = false;
         this.role = role;
     }
     public User(){

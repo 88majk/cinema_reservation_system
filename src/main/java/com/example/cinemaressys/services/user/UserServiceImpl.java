@@ -1,4 +1,4 @@
-package com.example.cinemaressys.services.implementations;
+package com.example.cinemaressys.services.user;
 
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
@@ -8,7 +8,7 @@ import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.repositories.RoleRepositories;
 import com.example.cinemaressys.repositories.UserRepositories;
 import com.example.cinemaressys.security.PasswordEncoder;
-import com.example.cinemaressys.services.UserService;
+import com.example.cinemaressys.services.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
