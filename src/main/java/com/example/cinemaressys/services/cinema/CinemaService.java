@@ -11,5 +11,4 @@ public interface CinemaService {
     CinemaResponseDto getCinema(int id);
     void updateCinema(int cinemaId, CinemaRequestDto requestDto);
     Boolean deleteCinema(int cinemaId);
-
 }
