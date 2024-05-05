@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -39,11 +39,24 @@ public class CinemaHallServiceImpl implements CinemaHallService{
 
     @Override
     public Boolean deleteAllHalls(int cinemaId) {
-        return null;
+        if(cinemaRepository.existsById(cinemaId)) {
+            List<CinemaHallResponseDto> hallsById = this.getHallsFromCinema(cinemaId);
+            for (CinemaHallResponseDto hall: hallsById) {
+                cinemaHallRepository.deleteById(hall.getCinemaHallId());
+            }
+            return true;
+        } else
+            return false;
     }
 
     @Override
     public List<CinemaHallResponseDto> getHallsFromCinema(int cinemaId) {
-        return null;
+        return cinemaHallRepository.getAllHallsByCinemaId(cinemaId).stream().map(
+                c -> new CinemaHallResponseDto(
+                        c.getCinemaHallId(),
+                        c.getName(),
+                        c.getCinema()
+                )
+        ).collect(Collectors.toList());
     }
 }

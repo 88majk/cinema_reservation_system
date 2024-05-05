@@ -39,4 +39,31 @@ public class CinemaHallController {
                     ". Please try again later.");
         }
     }
+
+    @DeleteMapping("/deleteincinema/{id}")
+    public ResponseEntity<?> deleteByCinemaId(@PathVariable int id) {
+        try {
+            if (cinemaHallService.deleteAllHalls(id))
+                return ResponseEntity.ok("Halls from cinema with id " + id + " were successfully deleted.");
+            else
+                return ResponseEntity.ok().body("Halls from cinema with id " + id + " not found.");
+        } catch (MyException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("An unexpected error: " + e.getMessage() +
+                    ". Please try again later.");
+        }
+    }
+
+    @GetMapping("/incinema/{id}")
+    public ResponseEntity<?> getAll(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok().body(cinemaHallService.getHallsFromCinema(id));
+        } catch (MyException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("An unexpected error: " + e.getMessage() +
+                    ". Please try again later.");
+        }
+    }
 }
