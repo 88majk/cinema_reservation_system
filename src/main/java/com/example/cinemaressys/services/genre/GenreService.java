@@ -1,4 +1,4 @@
-package com.example.cinemaressys.services;
+package com.example.cinemaressys.services.genre;
 
 import com.example.cinemaressys.dtos.genre.GenreResponseDto;
 

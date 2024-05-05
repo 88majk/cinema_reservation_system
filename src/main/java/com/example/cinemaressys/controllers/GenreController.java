@@ -1,7 +1,7 @@
 package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.genre.GenreResponseDto;
-import com.example.cinemaressys.services.GenreService;
+import com.example.cinemaressys.services.genre.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,8 +1,7 @@
-package com.example.cinemaressys.services.implementations;
+package com.example.cinemaressys.services.genre;
 
 import com.example.cinemaressys.dtos.genre.GenreResponseDto;
 import com.example.cinemaressys.repositories.GenreRepositories;
-import com.example.cinemaressys.services.GenreService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

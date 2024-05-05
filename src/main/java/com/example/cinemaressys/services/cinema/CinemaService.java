@@ -1,4 +1,4 @@
-package com.example.cinemaressys.services;
+package com.example.cinemaressys.services.cinema;
 
 import com.example.cinemaressys.dtos.cinema.CinemaRequestDto;
 import com.example.cinemaressys.dtos.cinema.CinemaResponseDto;
@@ -11,5 +11,4 @@ public interface CinemaService {
     CinemaResponseDto getCinema(int id);
     void updateCinema(int cinemaId, CinemaRequestDto requestDto);
     Boolean deleteCinema(int cinemaId);
-
 }

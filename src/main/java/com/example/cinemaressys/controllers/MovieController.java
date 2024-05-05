@@ -1,18 +1,13 @@
 package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.movie.MovieRequestDto;
-import com.example.cinemaressys.dtos.movie.MovieResponseDto;
-import com.example.cinemaressys.entities.Movie;
 import com.example.cinemaressys.exception.MyException;
-import com.example.cinemaressys.repositories.CinemaRepositories;
-import com.example.cinemaressys.services.CinemaService;
-import com.example.cinemaressys.services.MovieService;
+import com.example.cinemaressys.services.movie.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController

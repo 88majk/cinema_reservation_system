@@ -1,10 +1,9 @@
-package com.example.cinemaressys.services.implementations;
+package com.example.cinemaressys.services.cinema;
 
 import com.example.cinemaressys.dtos.cinema.CinemaRequestDto;
 import com.example.cinemaressys.dtos.cinema.CinemaResponseDto;
 import com.example.cinemaressys.entities.Cinema;
 import com.example.cinemaressys.repositories.CinemaRepositories;
-import com.example.cinemaressys.services.CinemaService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,8 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public void addCinema(CinemaRequestDto requestDto) {
-        cinemaRepository.save(new Cinema(requestDto.getAddress(),
+        cinemaRepository.save(new Cinema(
+                requestDto.getAddress(),
                 requestDto.getName(),
                 requestDto.getLocalization(),
                 requestDto.getPhoneNumber(),
@@ -46,7 +46,7 @@ public class CinemaServiceImpl implements CinemaService {
         return cinemaRepository.findById(id)
                 .map(cinema ->
                 {
-                    Set<String> halls = cinemaRepository.getHallsByCinemaId(id);
+                    Set<String> hall = cinemaRepository.getHallsByCinemaId(id);
                     return new CinemaResponseDto(
                             cinema.getId(),
                             cinema.getAddress(),
@@ -54,7 +54,7 @@ public class CinemaServiceImpl implements CinemaService {
                             cinema.getLocalization(),
                             cinema.getPhoneNumber(),
                             cinema.getEmailContact(),
-                            halls
+                            hall
                     );
                 }
                 ).orElse(null);
@@ -70,6 +70,7 @@ public class CinemaServiceImpl implements CinemaService {
         existingCinema.setLocalization(requestDto.getLocalization());
         existingCinema.setPhoneNumber(requestDto.getPhoneNumber());
         existingCinema.setEmailContact(requestDto.getEmailContact());
+
         cinemaRepository.save(existingCinema);
     }
 
