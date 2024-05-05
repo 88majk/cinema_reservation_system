@@ -14,7 +14,7 @@ import java.util.Set;
 public class Cinema {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int cinemaId;
     private String address;
     private String name;
     private String localization;

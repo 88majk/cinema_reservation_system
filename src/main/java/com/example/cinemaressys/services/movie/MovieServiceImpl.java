@@ -5,6 +5,8 @@ import com.example.cinemaressys.dtos.movie.MovieResponseDto;
 import com.example.cinemaressys.entities.Genre;
 import com.example.cinemaressys.entities.Movie;
 import com.example.cinemaressys.repositories.MovieRepositories;
+import com.example.cinemaressys.services.movie.MovieService;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -75,7 +77,9 @@ public class MovieServiceImpl implements MovieService {
         ).orElse(null);
     }
 
+
     @Override
+
     public void updateMovie(int movieId, MovieRequestDto requestDto) {
         Movie existingMovie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new EntityNotFoundException("Movie with id " + movieId + " not found!"));
