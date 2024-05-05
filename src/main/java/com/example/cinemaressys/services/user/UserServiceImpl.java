@@ -42,22 +42,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User loginUser(UserLoginRequestDto userLoginRequestDto) {
+    public void loginUser(UserLoginRequestDto userLoginRequestDto) {
         if (!userRepositories.existsByEmail(userLoginRequestDto.getEmail())){
             throw new MyException("Email address doesn't exists. First you need to register");
         }
         else {
             try {
                 String encodedPassword = userRepositories.findPasswordByEmail(userLoginRequestDto.getEmail());
-                boolean correctPassword = PasswordEncoder.comparePasswords(userLoginRequestDto.getPassword(),
-                        encodedPassword);
+                boolean correctPassword = PasswordEncoder.comparePasswords(userLoginRequestDto.getPassword(), encodedPassword);
 
                 if (!correctPassword) {
                     throw new MyException("Password is not correct.");
                 }
-
-                User user = userRepositories.findUserByEmail(userLoginRequestDto.getEmail());
-                return user;
             } catch (MyException e) {
                 throw e;
             } catch (Exception e) {
