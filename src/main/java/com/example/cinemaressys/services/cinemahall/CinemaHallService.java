@@ -2,7 +2,6 @@ package com.example.cinemaressys.services.cinemahall;
 
 import com.example.cinemaressys.dtos.cinemahall.CinemaHallRequestDto;
 import com.example.cinemaressys.dtos.cinemahall.CinemaHallResponseDto;
-import com.example.cinemaressys.entities.CinemaHall;
 
 import java.util.List;
 
