@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsersController {
     private final UserService userService;
     @Autowired
@@ -27,7 +28,7 @@ public class UsersController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred during registration, please try again later.");
+                    .body("An unexpected error occurred during registration, please try again later." + e.getMessage());
         }
     }
 
