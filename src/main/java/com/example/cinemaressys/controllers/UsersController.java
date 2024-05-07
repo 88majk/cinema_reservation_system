@@ -2,6 +2,7 @@ package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
+import com.example.cinemaressys.dtos.user.TokenResponse;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
 import com.example.cinemaressys.exception.MyException;
@@ -41,7 +42,8 @@ public class UsersController {
         try{
             User user = userService.loginUser(userLoginRequestDto);
             String token = JwtTokenProvider.generateToken(user);
-            return ResponseEntity.ok().body(token);
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok().body(tokenResponse);
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){

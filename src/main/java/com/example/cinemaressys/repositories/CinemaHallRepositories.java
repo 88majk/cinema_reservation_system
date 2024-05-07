@@ -11,4 +11,5 @@ import java.util.List;
 public interface CinemaHallRepositories extends JpaRepository<CinemaHall, Integer> {
     @Query("SELECT ch FROM CinemaHall ch WHERE ch.cinema.cinemaId = :cinemaId")
     List<CinemaHall> getAllHallsByCinemaId(@Param("cinemaId") int cinemaId);
+    CinemaHall getCinemaHallByCinemaHallId(int CinemaHallId);
 }
