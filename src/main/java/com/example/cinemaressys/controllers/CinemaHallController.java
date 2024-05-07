@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/halls")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class CinemaHallController {
     private final CinemaHallService cinemaHallService;
-    @PostMapping("/add/{id}")
-    public ResponseEntity<?> add(@PathVariable int id, @RequestBody CinemaHallRequestDto requestDto) {
+    @PostMapping("/add/{CinemaId}")
+    public ResponseEntity<?> add(@PathVariable int CinemaId, @RequestBody CinemaHallRequestDto requestDto) {
         try {
-            cinemaHallService.addHallToCinema(id, requestDto);
-            return ResponseEntity.ok().body("Added new hall to cinema with id " + id + ".");
+            cinemaHallService.addHallToCinema(CinemaId, requestDto);
+            return ResponseEntity.ok().body("Added new hall to cinema with id " + CinemaId + ".");
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
