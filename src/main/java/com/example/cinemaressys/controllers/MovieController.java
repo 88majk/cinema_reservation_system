@@ -33,6 +33,7 @@ public class MovieController {
     @GetMapping("/all")
     public ResponseEntity<?> getAll(){
         try {
+            //movieService.getMoviesFromApi();
             return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

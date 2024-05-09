@@ -28,6 +28,8 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> movieGenres = new HashSet<>();
 
+    @OneToMany(mappedBy = "movieId")
+    private Set<MovieSession> session = new HashSet<>();
 
     public Movie(String name, String description, LocalDate releaseDate, int minimumAge, int duration,
                  String productionCountry, String director, Set<Genre> movieGenres) {
