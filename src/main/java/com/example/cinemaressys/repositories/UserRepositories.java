@@ -18,4 +18,5 @@ public interface UserRepositories extends JpaRepository<User, Integer> {
     boolean findIsAdminByEmail(String email);
     User findUserByEmail(String email);
     List<User> findByRoleRoleId(int roleId);
+    User findByUserId(int userId);
 }

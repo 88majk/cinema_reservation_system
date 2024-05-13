@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DictSeatClassRepositories extends JpaRepository<DictSeatClass, Integer> {
     DictSeatClass findByName(String name);
+    DictSeatClass findByDictSeatClassId(int dictSeatClassId);
 }

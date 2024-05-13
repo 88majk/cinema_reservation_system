@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SeatRepositories extends JpaRepository<Seat, Integer> {
     List<Seat> findByCinemaHallCinemaHallId(int cinemaHallId);
+    Seat findBySeatId(int seatId);
 }

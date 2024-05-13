@@ -24,7 +24,7 @@ public class MovieSessionController {
     @ApiOperation("Get movie sessions for a given cinema and date")
     public ResponseEntity<?> getMoviesAndSession(@RequestParam int cinemaId, @RequestParam String movieSessionDate){
         try{
-            MovieSessionResponse json = movieSessionService.getMovies(cinemaId, movieSessionDate);
+            MovieSessionResponse json = movieSessionService.getMoviesSessions(cinemaId, movieSessionDate);
             return ResponseEntity.ok().body(json);
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

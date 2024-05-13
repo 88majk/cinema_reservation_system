@@ -21,13 +21,14 @@ public interface MovieSessionRepositories extends JpaRepository<MovieSession, In
     @Query("SELECT ms FROM MovieSession ms " +
             "WHERE ms.cinemaHall = :cinemaHall " +
             "AND ms.dateOfSession = :dateOfSession " +
-            "AND cast(ms.timeOfSession as time) >= cast(:timeOfSession as time)")
+            "AND cast(ms.timeOfSession as time) >= cast(:timeOfSession as time) " +
+            "ORDER BY ms.timeOfSession ASC")
     List<MovieSession> getMovieSessionByCinemaHallAndDateOfSessionAndTimeOfSession(
             @Param("cinemaHall") CinemaHall cinemaHall,
             @Param("dateOfSession") LocalDate dateOfSession,
             @Param("timeOfSession") LocalTime timeOfSession);
 
-    Movie findMovieByMovieSessionId(int movieSessionId);
+    MovieSession findByMovieSessionId(int movieSessionId);
 
 
 }
