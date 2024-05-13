@@ -56,7 +56,7 @@ public class UsersController {
     public ResponseEntity<?> test(@RequestBody TokenRequestDto token) {
         try{
             JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token.getToken());
-            return ResponseEntity.ok().body(jwtClaims.getUserId()+" "+jwtClaims.getRole());
+            return ResponseEntity.ok().body(jwtClaims.getEmail()+" "+jwtClaims.getRole());
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){

@@ -27,7 +27,7 @@ public class MovieSessionServiceImpl implements MovieSessionService {
     final private CinemaHallRepositories cinemaHallRepositories;
 
     @Override
-    public MovieSessionResponse getMovies(int cinemaId, String movieSessionDateStr) {
+    public MovieSessionResponse getMoviesSessions(int cinemaId, String movieSessionDateStr) {
         try {
             LocalDate movieSessionDate = LocalDate.parse(movieSessionDateStr);
             LocalTime localTime = movieSessionDate.equals(LocalDate.now()) ? LocalTime.now().minusHours(1) : LocalTime.parse("00:00");
@@ -37,7 +37,9 @@ public class MovieSessionServiceImpl implements MovieSessionService {
             List<MovieSession> allMovieSession = cinemaHalls.stream()
                     .flatMap(cinemaHall -> {
                         try {
-                            return movieSessionRepositories.getMovieSessionByCinemaHallAndDateOfSessionAndTimeOfSession(cinemaHall, movieSessionDate, localTime).stream();
+                            return movieSessionRepositories.
+                                    getMovieSessionByCinemaHallAndDateOfSessionAndTimeOfSession(cinemaHall,
+                                            movieSessionDate, localTime).stream();
                         } catch (Exception e) {
                             throw new MyException("Failed to fetch movie sessions for cinema hall: " +
                                     cinemaHall.getCinemaHallId() + " " + e);
@@ -53,6 +55,7 @@ public class MovieSessionServiceImpl implements MovieSessionService {
                         Movie movie = entry.getKey();
                         List<MovieSession> sessions = entry.getValue();
                         List<MovieSessionDto> movieSessionDtoList = sessions.stream()
+                                .sorted(Comparator.comparing(session -> session.getTimeOfSession())) // Sortowanie po godzinie
                                 .map(session -> new MovieSessionDto(
                                         session.getMovieSessionId(),
                                         session.getDateOfSession(),

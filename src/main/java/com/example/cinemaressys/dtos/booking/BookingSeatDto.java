@@ -1,4 +1,4 @@
-package com.example.cinemaressys.dtos.jwt;
+package com.example.cinemaressys.dtos.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class JwtClaims {
-    private String email;
-    private String role;
+public class BookingSeatDto {
+    private int bookingStatus;
+    private int seatId;
 }

@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SeatDto {
+    private int seatId;
     private char row;
-    private int columns;
+    private int column;
     private String seatClass;
+    private boolean isAvailable;
+    private float price;
+    private String bookingStatus;
 }
