@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -60,7 +61,15 @@ public class BookingServiceImpl implements BookingService{
             MovieSession movieSession = movieSessionRepositories.
                     findByMovieSessionId(bookingMovieSessionDto.getMovieSessionId());
 
+            List<Integer> statusIds = Arrays.asList(1, 2);
+            List<BookingSeat> bookedSeatsList = bookingSeatRepositories.
+                    getByMovieSessionMovieSessionIdAndDictBookingStatusIdIn(
+                            bookingMovieSessionDto.getMovieSessionId(), statusIds);
+
             for (BookingSeatDto bookingSeatDto : bookingMovieSessionDto.getBookingSeatDtoList()) {
+                if (bookedSeatsList.stream().anyMatch(seat -> seat.getSeat().getSeatId() == bookingSeatDto.getSeatId())) {
+                    throw new MyException("Seat " + bookingSeatDto.getSeatId() + " is already booked.");
+                }
                 DictBookingStatus dictBookingStatusForBookingSeat = dictBookingStatusRepositories.
                         findByDictBookingStatusId(bookingSeatDto.getBookingStatus());
                 if (dictBookingStatusForBookingSeat == null) {
@@ -93,6 +102,80 @@ public class BookingServiceImpl implements BookingService{
         BookingResponseDto bookingResponseDto = new BookingResponseDto(
                 bookingNumber
         );
+        return bookingResponseDto;
+    }
+
+    @Override
+    public BookingResponseDto updateBooking(BookingAddBookingRequestDto bookingAddBookingRequestDto) {
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(bookingAddBookingRequestDto.getToken());
+        User user = userRepositories.findUserByEmail(jwtClaims.getEmail());
+        if (user == null) {
+            throw new MyException("User not found!");
+        }
+        DictBookingStatus dictBookingStatus = dictBookingStatusRepositories.
+                findByDictBookingStatusId(bookingAddBookingRequestDto.getBookingStatus());
+        if (dictBookingStatus == null) {
+            throw new MyException("Booking status not found!");
+        }
+        Booking booking = bookingRepositories.findByBookingNumber(bookingAddBookingRequestDto.getBookingNumber());
+
+        for (BookingMovieSessionDto bookingMovieSessionDto : bookingAddBookingRequestDto.getBookingMovieSessionDtoList()) {
+            MovieSession movieSession = movieSessionRepositories.
+                    findByMovieSessionId(bookingMovieSessionDto.getMovieSessionId());
+            List<BookingSeat> bookingSeatList = bookingSeatRepositories.
+                    findByBookingBookingIdAndMovieSessionMovieSessionId(
+                            booking.getBookingId(), bookingMovieSessionDto.getMovieSessionId());
+
+            DictBookingStatus dictBookingStatusCancelled = dictBookingStatusRepositories.findByDictBookingStatusId(3);
+            for (BookingSeat bookingSeat : bookingSeatList) {
+                boolean isSeatPresent = false;
+                for (BookingSeatDto bookingSeatDto : bookingMovieSessionDto.getBookingSeatDtoList()) {
+                    if (bookingSeatDto.getSeatId() == bookingSeat.getSeat().getSeatId()) {
+                        isSeatPresent = true;
+                        break;
+                    }
+                }
+                if (!isSeatPresent) {
+                    bookingSeat.setDictBookingStatus(dictBookingStatusCancelled);
+                    bookingSeatRepositories.save(bookingSeat);
+                }
+                else {
+                    bookingSeat.setDictBookingStatus(dictBookingStatus);
+                    bookingSeatRepositories.save(bookingSeat);
+                }
+            }
+
+            for (BookingSeatDto bookingSeatDto : bookingMovieSessionDto.getBookingSeatDtoList()){
+                boolean seatExists = false;
+                for (BookingSeat bookingSeat : bookingSeatList) {
+                    if (bookingSeat.getSeat().getSeatId() == bookingSeatDto.getSeatId()) {
+                        seatExists = true;
+                        bookingSeat.setDictBookingStatus(dictBookingStatus);
+                        bookingSeatRepositories.save(bookingSeat);
+                        break;
+                    }
+                }
+                if (!seatExists) {
+                    Seat seat = seatRepositories.findBySeatId(bookingSeatDto.getSeatId());
+                    if (seat == null) {
+                        throw new MyException("Seat not found.");
+                    }
+                    Price price = priceRepositories.findByMovieSessionAndDictSeatClass(movieSession, seat.getDictSeatClass());
+                    BookingSeat newBookingSeat = new BookingSeat(
+                            booking,
+                            movieSession,
+                            price,
+                            seat,
+                            dictBookingStatus
+                    );
+                    bookingSeatRepositories.save(newBookingSeat);
+                }
+
+            }
+        }
+        booking.setDictBookingStatus(dictBookingStatus);
+        bookingRepositories.save(booking);
+        BookingResponseDto bookingResponseDto = new BookingResponseDto(bookingAddBookingRequestDto.getBookingNumber());
         return bookingResponseDto;
     }
 

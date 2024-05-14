@@ -9,4 +9,6 @@ public interface BookingRepositories extends JpaRepository<Booking, Integer> {
     Booking findByBookingId(int bookingId);
     @Query("SELECT MAX(b.bookingNumber) FROM Booking b")
     Integer findMaxBookingNumber();
+    Booking findByBookingNumber(int bookingNumber);
+
 }

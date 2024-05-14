@@ -78,7 +78,11 @@ public class SeatServiceImpl implements SeatService{
         for (Price price : priceList) {
             priceMap.put(price.getDictSeatClass().getDictSeatClassId(), price.getPrice());
         }
-        List<BookingSeat> bookingSeatList = bookingSeatRepositories.getByMovieSessionMovieSessionId(movieSessionId);
+
+        List<Integer> statusIds = Arrays.asList(1, 2);
+        List<BookingSeat> bookedSeatsList = bookingSeatRepositories.
+                getByMovieSessionMovieSessionIdAndDictBookingStatusIdIn(movieSessionId, statusIds);
+
         Map<Character, List<SeatDto>> rowMap = new HashMap<>();
         List<SeatDto> seatDtoList = new ArrayList<>();
 
@@ -102,7 +106,7 @@ public class SeatServiceImpl implements SeatService{
                 seatDto.setPrice(0);
             }
             BookingSeat foundBookingSeat = null;
-            for (BookingSeat bookingSeat : bookingSeatList) {
+            for (BookingSeat bookingSeat : bookedSeatsList) {
                 if (bookingSeat.getSeat().getSeatId() == seatDto.getSeatId()) {
                     foundBookingSeat = bookingSeat;
                     break;

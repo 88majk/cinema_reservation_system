@@ -6,4 +6,5 @@ import com.example.cinemaressys.dtos.booking.BookingResponseDto;
 
 public interface BookingService {
     BookingResponseDto createNewBooking(BookingAddBookingRequestDto bookingAddBookingRequestDto);
+    BookingResponseDto updateBooking(BookingAddBookingRequestDto bookingAddBookingRequestDto);
 }
