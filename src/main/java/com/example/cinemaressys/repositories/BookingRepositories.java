@@ -3,6 +3,7 @@ package com.example.cinemaressys.repositories;
 import com.example.cinemaressys.entities.Booking;
 import com.example.cinemaressys.entities.BookingSeat;
 import com.example.cinemaressys.entities.MovieSession;
+import com.example.cinemaressys.entities.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,10 @@ public interface BookingRepositories extends JpaRepository<Booking, Integer> {
     Booking findByBookingNumber(int bookingNumber);
     @Query("SELECT b FROM Booking b WHERE b.user.userId = :userId")
     List<Booking> getBookingsByUserId(@Param("userId") int userId);
+    @Query("SELECT bs FROM BookingSeat  bs WHERE bs.booking.bookingId = :bookingId")
+    List<BookingSeat> getBookingDetailsByBookingId(@Param("bookingId") int bookingId);
     @Query("SELECT bs.movieSession FROM BookingSeat bs WHERE bs.booking.bookingId = :bookingId")
     MovieSession getMovieSessionByBookingId(@Param("bookingId") int bookingId);
-
+    @Query("SELECT bs.seat FROM BookingSeat bs WHERE bs.booking.bookingId = :bookingId")
+    List<Seat> getSeatsFromOrder(@Param("bookingId") int bookingId);
 }
