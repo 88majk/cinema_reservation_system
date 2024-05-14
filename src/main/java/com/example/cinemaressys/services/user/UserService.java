@@ -7,4 +7,5 @@ import com.example.cinemaressys.entities.User;
 public interface UserService {
     void registerUser(UserRegisterRequestDto userRegisterRequestDto);
     User loginUser(UserLoginRequestDto userLoginRequestDto);
+    User findUserByEmail(String email);
 }

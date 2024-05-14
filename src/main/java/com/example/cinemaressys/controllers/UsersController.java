@@ -64,4 +64,14 @@ public class UsersController {
                     .body(e.getMessage());
         }
     }
+
+    @GetMapping("/{user_email}")
+    public ResponseEntity<?> findUserByEmail(@PathVariable String user_email) {
+        try {
+            User user = userService.findUserByEmail(user_email);
+            return ResponseEntity.ok().body(user);
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
