@@ -7,7 +7,6 @@ import com.example.cinemaressys.dtos.movie.MoviesApiResponse;
 import com.example.cinemaressys.entities.Genre;
 import com.example.cinemaressys.entities.Movie;
 import com.example.cinemaressys.repositories.MovieRepositories;
-import com.example.cinemaressys.services.movie.MovieService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

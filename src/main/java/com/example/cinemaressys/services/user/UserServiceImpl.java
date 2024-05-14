@@ -8,7 +8,6 @@ import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.repositories.RoleRepositories;
 import com.example.cinemaressys.repositories.UserRepositories;
 import com.example.cinemaressys.security.PasswordEncoder;
-import com.example.cinemaressys.services.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginUser(UserLoginRequestDto userLoginRequestDto) {
         if (!userRepositories.existsByEmail(userLoginRequestDto.getEmail())){
-            throw new MyException("Email address doesn't exists. First you need to register");
+            throw new MyException("Email address doesn't exists. First you need to register.");
         }
         else {
             try {
@@ -64,5 +63,10 @@ public class UserServiceImpl implements UserService {
                 throw new MyException("An unexpected error occurred during login, please try again later.");
             }
         }
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepositories.findUserByEmail(email);
     }
 }

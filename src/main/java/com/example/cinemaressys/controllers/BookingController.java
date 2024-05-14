@@ -39,4 +39,16 @@ public class BookingController {
                     .body(e.getMessage());
         }
     }
+
+    @GetMapping("/userBookings/{token}")
+    public ResponseEntity<?> getUserBookings(@PathVariable String token) {
+        try{
+            return ResponseEntity.ok().body(bookingService.getBookingsByUserId(token));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 }

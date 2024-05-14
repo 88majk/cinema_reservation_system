@@ -1,9 +1,6 @@
 package com.example.cinemaressys.services.booking;
 
-import com.example.cinemaressys.dtos.booking.BookingAddBookingRequestDto;
-import com.example.cinemaressys.dtos.booking.BookingMovieSessionDto;
-import com.example.cinemaressys.dtos.booking.BookingResponseDto;
-import com.example.cinemaressys.dtos.booking.BookingSeatDto;
+import com.example.cinemaressys.dtos.booking.*;
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.entities.*;
 import com.example.cinemaressys.exception.MyException;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -177,6 +175,22 @@ public class BookingServiceImpl implements BookingService{
         bookingRepositories.save(booking);
         BookingResponseDto bookingResponseDto = new BookingResponseDto(bookingAddBookingRequestDto.getBookingNumber());
         return bookingResponseDto;
+    }
+
+    @Override
+    public List<BookingUserResponseDto> getBookingsByUserId(String token) {
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
+        User user = userRepositories.findUserByEmail(jwtClaims.getEmail());
+        return bookingRepositories.getBookingsByUserId(user.getUserId()).stream().map(
+                booking -> new BookingUserResponseDto(
+                        booking.getBookingNumber(),
+                        booking.getTotalPrice(),
+                        bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getCinemaHall().getCinema().getName(),
+                        bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getMovieId().getName(),
+                        bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getDateOfSession(),
+                        booking.getDictBookingStatus()
+                )
+        ).collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
