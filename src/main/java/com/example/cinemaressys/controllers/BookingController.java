@@ -24,7 +24,13 @@ public class BookingController {
     @PostMapping("/newBooking")
     public ResponseEntity<?> createNewBooking(@RequestBody BookingAddBookingRequestDto bookingAddBookingRequestDto) {
         try{
-            BookingResponseDto bookingResponseDto = bookingService.createNewBooking(bookingAddBookingRequestDto);
+            BookingResponseDto bookingResponseDto = null;
+            if (bookingAddBookingRequestDto.getBookingNumber() == -1) {
+                bookingResponseDto = bookingService.createNewBooking(bookingAddBookingRequestDto);
+            }
+            else {
+                bookingResponseDto = bookingService.updateBooking(bookingAddBookingRequestDto);
+            }
             return ResponseEntity.ok().body(bookingResponseDto);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

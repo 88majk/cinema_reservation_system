@@ -13,5 +13,6 @@ public class BookingAddBookingRequestDto {
     private String token;
     private float totalPrice;
     private int bookingStatus;
+    private int bookingNumber;
     private List<BookingMovieSessionDto> bookingMovieSessionDtoList;
 }
