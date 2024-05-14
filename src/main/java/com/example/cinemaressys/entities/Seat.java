@@ -31,4 +31,9 @@ public class Seat {
 
     public Seat() {
     }
+
+    @Override
+    public String toString() {
+        return rowNumber + "-" + columnNumber;
+    }
 }

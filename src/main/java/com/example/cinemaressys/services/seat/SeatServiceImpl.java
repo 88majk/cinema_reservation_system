@@ -148,7 +148,7 @@ public class SeatServiceImpl implements SeatService{
 
     void insert100Booking(){
         Random random = new Random();
-        for (int i = 76; i < 104; i++) {
+        for (int i = 1; i < 28; i++) {
             int bookingNumber = 20000000 + i;
             int dictBookingStatusId = 2;
             int userId;
@@ -193,7 +193,7 @@ public class SeatServiceImpl implements SeatService{
     void insertPrice() {
         Random random = new Random();
 
-        for (int i = 76; i < 104; i++){
+        for (int i = 1; i < 28; i++){
             MovieSession movieSession = movieSessionRepositories.findByMovieSessionId(i);
             for (int j = 1 ; j < 4; j++) {
                 DictSeatClass dictSeatClass = dictSeatClassRepositories.findByDictSeatClassId(j);

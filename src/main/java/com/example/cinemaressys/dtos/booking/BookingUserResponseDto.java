@@ -13,6 +13,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class BookingUserResponseDto {
+    private int bookingId;
     private int bookingNumber;
     private float totalPrice;
     private String cinemaName;

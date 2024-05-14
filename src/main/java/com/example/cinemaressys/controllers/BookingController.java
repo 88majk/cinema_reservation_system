@@ -51,4 +51,16 @@ public class BookingController {
                     .body(e.getMessage());
         }
     }
+
+    @GetMapping("/userBookings/bookingDetails/{bookingId}")
+    public ResponseEntity<?> getBookingsDetailsByBookingId(@PathVariable int bookingId) {
+        try{
+            return ResponseEntity.ok().body(bookingService.getBookingDetailsByBookingId(bookingId));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 }

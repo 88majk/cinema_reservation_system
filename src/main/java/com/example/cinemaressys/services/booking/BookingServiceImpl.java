@@ -183,12 +183,28 @@ public class BookingServiceImpl implements BookingService{
         User user = userRepositories.findUserByEmail(jwtClaims.getEmail());
         return bookingRepositories.getBookingsByUserId(user.getUserId()).stream().map(
                 booking -> new BookingUserResponseDto(
+                        booking.getBookingId(),
                         booking.getBookingNumber(),
                         booking.getTotalPrice(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getCinemaHall().getCinema().getName(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getMovieId().getName(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getDateOfSession(),
                         booking.getDictBookingStatus()
+                )
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingSeatResponseDto> getBookingDetailsByBookingId(int bookingId) {
+        return bookingRepositories.getBookingDetailsByBookingId(bookingId).stream().map(
+                bookingDetails -> new BookingSeatResponseDto(
+                        bookingDetails.getSeat().toString(),
+                        bookingDetails.getPrice().getPrice(),
+                        bookingDetails.getMovieSession().getMovieId().getName(),
+                        bookingDetails.getMovieSession().getCinemaHall().getCinema().getName(),
+                        bookingDetails.getMovieSession().getCinemaHall().getName(),
+                        bookingDetails.getMovieSession().getMovieSessionId(),
+                        bookingDetails.getBooking().getBookingNumber()
                 )
         ).collect(Collectors.toList());
     }
