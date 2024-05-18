@@ -5,6 +5,7 @@ import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
 import com.example.cinemaressys.dtos.user.TokenResponse;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
+import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,26 @@ public class UsersController {
             return ResponseEntity.ok().body(user);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("update/{token}")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequestDto requestDto, @PathVariable String token) {
+        try{
+            userService.updateUserData(requestDto, token);
+            return ResponseEntity.ok("User was updated succesfully.");
+        } catch (MyException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("changePassword/{token}")
+    public ResponseEntity<?> updateUserPassword(@RequestBody String password, @PathVariable String token) {
+        try {
+            userService.updateUserPassword(password, token);
+            return ResponseEntity.ok("Users password was updated successfully.");
+        } catch (MyException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

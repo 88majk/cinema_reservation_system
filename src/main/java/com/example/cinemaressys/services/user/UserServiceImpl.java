@@ -1,12 +1,15 @@
 package com.example.cinemaressys.services.user;
 
+import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
+import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
 import com.example.cinemaressys.entities.Role;
 import com.example.cinemaressys.entities.User;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.repositories.RoleRepositories;
 import com.example.cinemaressys.repositories.UserRepositories;
+import com.example.cinemaressys.security.JwtTokenProvider;
 import com.example.cinemaressys.security.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,5 +71,40 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String email) {
         return userRepositories.findUserByEmail(email);
+    }
+
+    @Override
+    public void updateUserData(UserUpdateRequestDto updateRequest, String token) {
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
+        if(userRepositories.existsByEmail(jwtClaims.getEmail())) {
+            User existingUser = userRepositories.findUserByEmail(jwtClaims.getEmail());
+
+            if(!userRepositories.existsByEmail(updateRequest.getEmail())) {
+                existingUser.setName(updateRequest.getName());
+                existingUser.setSurname(updateRequest.getSurname());
+                existingUser.setEmail(updateRequest.getEmail());
+                existingUser.setDateOfBirth(updateRequest.getDateOfBirth());
+                userRepositories.save(existingUser);
+            } else {
+                throw new MyException("Email you provided is already taken.");
+            }
+        } else {
+            throw new MyException("User with email " + jwtClaims.getEmail() + " not found.");
+        }
+    }
+
+    @Override
+    public void updateUserPassword(String password, String token) {
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
+        if(userRepositories.existsByEmail(jwtClaims.getEmail())) {
+            User existingUser = userRepositories.findUserByEmail(jwtClaims.getEmail());
+
+            String hashPassword = PasswordEncoder.encodePassword(password);
+
+            existingUser.setPassword(hashPassword);
+            userRepositories.save(existingUser);
+        } else {
+            throw new MyException("User with email " + jwtClaims.getEmail() + " not found.");
+        }
     }
 }
