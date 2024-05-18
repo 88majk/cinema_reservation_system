@@ -189,6 +189,7 @@ public class BookingServiceImpl implements BookingService{
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getCinemaHall().getCinema().getName(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getMovieId().getName(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getDateOfSession(),
+                        bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getTimeOfSession(),
                         booking.getDictBookingStatus()
                 )
         ).collect(Collectors.toList());
@@ -199,10 +200,13 @@ public class BookingServiceImpl implements BookingService{
         return bookingRepositories.getBookingDetailsByBookingId(bookingId).stream().map(
                 bookingDetails -> new BookingSeatResponseDto(
                         bookingDetails.getSeat().toString(),
+                        bookingDetails.getSeat().getDictSeatClass().getName(),
                         bookingDetails.getPrice().getPrice(),
                         bookingDetails.getMovieSession().getMovieId().getName(),
                         bookingDetails.getMovieSession().getCinemaHall().getCinema().getName(),
                         bookingDetails.getMovieSession().getCinemaHall().getName(),
+                        bookingDetails.getMovieSession().getDateOfSession(),
+                        bookingDetails.getMovieSession().getTimeOfSession(),
                         bookingDetails.getMovieSession().getMovieSessionId(),
                         bookingDetails.getBooking().getBookingNumber()
                 )
