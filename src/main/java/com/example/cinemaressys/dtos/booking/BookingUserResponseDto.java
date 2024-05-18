@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,5 +20,6 @@ public class BookingUserResponseDto {
     private String cinemaName;
     private String movieName;
     private LocalDate sessionDate;
+    private LocalTime sessionTime;
     private DictBookingStatus status;
 }
