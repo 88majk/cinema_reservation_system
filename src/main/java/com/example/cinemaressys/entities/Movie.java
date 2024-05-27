@@ -31,6 +31,16 @@ public class Movie {
     @OneToMany(mappedBy = "movieId")
     private Set<MovieSession> session = new HashSet<>();
 
+    public void addGenre(Genre genre) {
+        movieGenres.add(genre);
+        genre.getMovies().add(this);
+    }
+
+    public void removeGenre(Genre genre) {
+        movieGenres.remove(genre);
+        genre.getMovies().remove(this);
+    }
+
     public Movie(String name, String description, LocalDate releaseDate, int minimumAge, int duration,
                  String productionCountry, String director, Set<Genre> movieGenres) {
         this.name = name;

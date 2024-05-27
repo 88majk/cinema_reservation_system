@@ -6,6 +6,7 @@ import com.example.cinemaressys.dtos.movie.MovieResponseDto;
 import com.example.cinemaressys.dtos.movie.MoviesApiResponse;
 import com.example.cinemaressys.entities.Genre;
 import com.example.cinemaressys.entities.Movie;
+import com.example.cinemaressys.repositories.GenreRepositories;
 import com.example.cinemaressys.repositories.MovieRepositories;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MovieServiceImpl implements MovieService {
     private final MovieRepositories movieRepository;
+    private final GenreRepositories genreRepository;
     private final OkHttpClient client = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
     @Override
@@ -86,6 +88,9 @@ public class MovieServiceImpl implements MovieService {
         Movie existingMovie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new EntityNotFoundException("Movie with id " + movieId + " not found!"));
 
+        Set<Genre> movieGenres = movieRepository.findGenresByMovieId(movieId);
+        Set<Genre> newGenres = new HashSet<>();
+
         existingMovie.setName(requestDto.getName());
         existingMovie.setDescription(requestDto.getDescription());
         existingMovie.setReleaseDate(requestDto.getReleaseDate());
@@ -93,7 +98,21 @@ public class MovieServiceImpl implements MovieService {
         existingMovie.setDuration(requestDto.getDuration());
         existingMovie.setProductionCountry(requestDto.getProductionCountry());
         existingMovie.setDirector(requestDto.getDirector());
-        existingMovie.setMovieGenres(requestDto.getMovieGenres());
+
+        for (Genre newGenre: requestDto.getMovieGenres()) {
+            boolean exists = false;
+            for (Genre genres: movieGenres) {
+                if(newGenre.getGenreId() == genres.getGenreId()){
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                newGenres.add(newGenre);
+            }
+        }
+
+        existingMovie.setMovieGenres(newGenres);
 
         movieRepository.save(existingMovie);
     }
