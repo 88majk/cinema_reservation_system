@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DictBookingStatusRepositories extends JpaRepository<DictBookingStatus, Integer> {
     DictBookingStatus findByDictBookingStatusId(int dictBookingStatusId);
+    DictBookingStatus findByName(String name);
 }

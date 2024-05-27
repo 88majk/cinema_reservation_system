@@ -11,4 +11,6 @@ import java.util.Set;
 public interface MovieRepositories extends JpaRepository<Movie, Integer> {
     @Query("SELECT m.movieGenres FROM Movie m WHERE m.movieId = :movieId")
     Set<Genre> findGenresByMovieId(@Param("movieId") int movieId);
+
+    Movie findByName(String name);
 }
