@@ -44,7 +44,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(int id){
+    public ResponseEntity<?> getById(@PathVariable int id){
         try{
             return ResponseEntity.ok()
                     .body(Objects.requireNonNullElseGet(movieService.getMovie(id),

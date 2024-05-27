@@ -21,7 +21,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getRole().getName()) // Dodaj claim z rolą użytkownika
+                .claim("role", user.getRole().getName())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SECRET_KEY)

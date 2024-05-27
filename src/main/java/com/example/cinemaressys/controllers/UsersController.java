@@ -80,7 +80,10 @@ public class UsersController {
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequestDto requestDto, @PathVariable String token) {
         try{
             userService.updateUserData(requestDto, token);
-            return ResponseEntity.ok("User was updated succesfully.");
+            User user = userService.findUserByEmail(requestDto.getEmail());
+            String newToken = JwtTokenProvider.generateToken(user);
+            TokenResponse tokenResponse = new TokenResponse(newToken);
+            return ResponseEntity.ok(tokenResponse);
         } catch (MyException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
