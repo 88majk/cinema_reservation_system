@@ -15,5 +15,8 @@ public class MovieSessionDto {
     private LocalDate dateOfSession;
     private LocalTime timeOfSession;
     private String sessionTypeName;
+    private String hallName;
+    private int availableSeat;
+    private int allSeats;
     private boolean isSubtitles;
 }

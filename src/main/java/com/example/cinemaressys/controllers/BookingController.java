@@ -1,6 +1,7 @@
 package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.booking.BookingAddBookingRequestDto;
+import com.example.cinemaressys.dtos.booking.BookingChangeStatusRequestDto;
 import com.example.cinemaressys.dtos.booking.BookingResponseDto;
 import com.example.cinemaressys.dtos.seat.ListSeatRequestDto;
 import com.example.cinemaressys.exception.MyException;
@@ -56,6 +57,20 @@ public class BookingController {
     public ResponseEntity<?> getBookingsDetailsByBookingId(@PathVariable int bookingId) {
         try{
             return ResponseEntity.ok().body(bookingService.getBookingDetailsByBookingId(bookingId));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/changeStatus/{bookingId}")
+    public ResponseEntity<?> changeStatus(@PathVariable int bookingId, @RequestBody BookingChangeStatusRequestDto
+            newStatus) {
+        try{
+            bookingService.changeBookingStatus(bookingId, newStatus.getNewStatus());
+            return ResponseEntity.ok().body(newStatus);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

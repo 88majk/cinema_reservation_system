@@ -1,28 +1,29 @@
 package com.example.cinemaressys.controllers;
 
-import com.example.cinemaressys.dtos.moviesession.MovieSessionInfoResponse;
+import com.example.cinemaressys.dtos.moviesession.MovieSessionResponse;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.services.moviesession.MovieSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.ApiOperation;
+
 
 @RestController
-@RequestMapping("/movieSession")
+@RequestMapping("/cinemas/{cinemasId}")
 @CrossOrigin(origins = "http://localhost:4200")
-public class MovieSessionController {
+public class CinemasMovieSessionController {
     private final MovieSessionService movieSessionService;
-
     @Autowired
-    public MovieSessionController(MovieSessionService movieSessionService){
+    public CinemasMovieSessionController(MovieSessionService movieSessionService){
         this.movieSessionService = movieSessionService;
     }
-
-    @GetMapping("/{movieSessionId}")
-    public ResponseEntity<?> getMovieSessionInfo(@PathVariable int movieSessionId){
+    @GetMapping("/movieSession")
+    @ApiOperation("Get movie sessions for a given cinema and date")
+    public ResponseEntity<?> getMoviesAndSession(@RequestParam int cinemaId, @RequestParam String movieSessionDate){
         try{
-            MovieSessionInfoResponse movieSessionInfoResponse = movieSessionService.getMovieSessionInfo(movieSessionId);
-            return ResponseEntity.ok().body(movieSessionInfoResponse);
+            MovieSessionResponse json = movieSessionService.getMoviesSessions(cinemaId, movieSessionDate);
+            return ResponseEntity.ok().body(json);
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -30,4 +31,5 @@ public class MovieSessionController {
                     + ". Please try again later.");
         }
     }
+
 }
