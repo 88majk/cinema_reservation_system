@@ -1,6 +1,7 @@
 package com.example.cinemaressys.services.user;
 
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
+import com.example.cinemaressys.dtos.user.UserDTO;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
 import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
@@ -74,18 +75,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO findUserByToken(String token) {
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
+        User user = userRepositories.findUserByEmail(jwtClaims.getEmail());
+
+        return new UserDTO(
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getDateOfBirth()
+        );
+    }
+
+    @Override
     public void updateUserData(UserUpdateRequestDto updateRequest, String token) {
         JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
         if(userRepositories.existsByEmail(jwtClaims.getEmail())) {
             User existingUser = userRepositories.findUserByEmail(jwtClaims.getEmail());
 
-            if(!userRepositories.existsByEmail(updateRequest.getEmail())) {
+            if(userRepositories.existsByEmail(updateRequest.getEmail()) &&
+                    updateRequest.getEmail().equals(jwtClaims.getEmail())) {
                 existingUser.setName(updateRequest.getName());
                 existingUser.setSurname(updateRequest.getSurname());
                 existingUser.setEmail(updateRequest.getEmail());
                 existingUser.setDateOfBirth(updateRequest.getDateOfBirth());
                 userRepositories.save(existingUser);
-            } else {
+            } else if (!userRepositories.existsByEmail(updateRequest.getEmail())) {
+                existingUser.setName(updateRequest.getName());
+                existingUser.setSurname(updateRequest.getSurname());
+                existingUser.setEmail(updateRequest.getEmail());
+                existingUser.setDateOfBirth(updateRequest.getDateOfBirth());
+                userRepositories.save(existingUser);
+            }
+            else {
                 throw new MyException("Email you provided is already taken.");
             }
         } else {

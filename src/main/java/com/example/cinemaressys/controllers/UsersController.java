@@ -2,10 +2,7 @@ package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
-import com.example.cinemaressys.dtos.user.TokenResponse;
-import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
-import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
-import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
+import com.example.cinemaressys.dtos.user.*;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +63,10 @@ public class UsersController {
         }
     }
 
-    @GetMapping("/{user_email}")
-    public ResponseEntity<?> findUserByEmail(@PathVariable String user_email) {
+    @GetMapping("/{token}")
+    public ResponseEntity<?> findUserByToken(@PathVariable String token) {
         try {
-            User user = userService.findUserByEmail(user_email);
+            UserDTO user = userService.findUserByToken(token);
             return ResponseEntity.ok().body(user);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
