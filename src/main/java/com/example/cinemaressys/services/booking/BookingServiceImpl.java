@@ -187,6 +187,7 @@ public class BookingServiceImpl implements BookingService{
                         booking.getBookingNumber(),
                         booking.getTotalPrice(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getCinemaHall().getCinema().getName(),
+                        bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getMovieSessionId(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getMovieId().getName(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getDateOfSession(),
                         bookingRepositories.getMovieSessionByBookingId(booking.getBookingId()).getTimeOfSession(),
@@ -211,6 +212,32 @@ public class BookingServiceImpl implements BookingService{
                         bookingDetails.getBooking().getBookingNumber()
                 )
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public void changeBookingStatus(int bookingId, String newStatus) {
+        if (!bookingRepositories.existsByBookingId(bookingId)) {
+            throw new MyException("Such booking id does not exist in the booking table.");
+        }
+        if (!bookingRepositories.existsByBookingId(bookingId)) {
+            throw new MyException("Such booking id does not exist in the bookingSeat table.");
+        }
+        DictBookingStatus dictBookingStatus = dictBookingStatusRepositories.findByName(newStatus);
+        if (dictBookingStatus == null) {
+            throw new MyException("This status does not exist in the database.");
+        }
+
+        try {
+            bookingSeatRepositories.updateStatusByBookingId(bookingId, dictBookingStatus.getDictBookingStatusId());
+        } catch (Exception e) {
+
+        }
+        try {
+            bookingRepositories.updateStatusByBookingId(bookingId, dictBookingStatus.getDictBookingStatusId());
+        } catch (Exception e) {
+
+        }
+
     }
 
     @Transactional(rollbackFor = Exception.class)

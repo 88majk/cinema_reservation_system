@@ -13,10 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface MovieSessionRepositories extends JpaRepository<MovieSession, Integer> {
-//    @Query("SELECT ms FROM MovieSession ms " +
-//            "WHERE ms.cinema_hall_id  = :cinema_hall_id " +
-//            "AND ms.date_of_session  >= :date_of_session " +
-//            "AND cast(ms.time_of_session  as time) >= cast(:time_of_session as time)")
 
     @Query("SELECT ms FROM MovieSession ms " +
             "WHERE ms.cinemaHall = :cinemaHall " +
@@ -30,5 +26,9 @@ public interface MovieSessionRepositories extends JpaRepository<MovieSession, In
 
     MovieSession findByMovieSessionId(int movieSessionId);
 
+    @Query("SELECT COUNT(bs) FROM BookingSeat bs WHERE bs.movieSession.movieSessionId = :sessionId")
+    Integer countBookedSeatsForSession(@Param("sessionId") int sessionId);
 
+    @Query("SELECT COUNT(s) FROM Seat s WHERE s.cinemaHall.cinemaHallId = :cinemaHallId")
+    Integer countAllSeatsForCinemaHall(@Param("cinemaHallId") int cinemaHallId);
 }

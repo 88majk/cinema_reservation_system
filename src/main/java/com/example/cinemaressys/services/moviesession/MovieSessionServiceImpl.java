@@ -2,6 +2,7 @@ package com.example.cinemaressys.services.moviesession;
 
 import com.example.cinemaressys.dtos.moviesession.MovieDto;
 import com.example.cinemaressys.dtos.moviesession.MovieSessionDto;
+import com.example.cinemaressys.dtos.moviesession.MovieSessionInfoResponse;
 import com.example.cinemaressys.dtos.moviesession.MovieSessionResponse;
 import com.example.cinemaressys.entities.CinemaHall;
 import com.example.cinemaressys.entities.Genre;
@@ -17,6 +18,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+
 
 
 @Service
@@ -61,6 +64,13 @@ public class MovieSessionServiceImpl implements MovieSessionService {
                                         session.getDateOfSession(),
                                         session.getTimeOfSession(),
                                         session.getDictSessionType().getName(),
+                                        session.getCinemaHall().getName(),
+                                        movieSessionRepositories.countAllSeatsForCinemaHall
+                                                (session.getCinemaHall().getCinemaHallId()) -
+                                                movieSessionRepositories.countBookedSeatsForSession
+                                                        (session.getMovieSessionId()),
+                                        movieSessionRepositories.countAllSeatsForCinemaHall
+                                                (session.getCinemaHall().getCinemaHallId()),
                                         session.isSubtitles()
                                 ))
                                 .collect(Collectors.toList());
@@ -91,5 +101,29 @@ public class MovieSessionServiceImpl implements MovieSessionService {
         } catch (Exception e) {
             throw new MyException("Failed to get movies: " + e);
         }
+    }
+
+    @Override
+    public MovieSessionInfoResponse getMovieSessionInfo(int movieSessionId) {
+        MovieSession movieSession = movieSessionRepositories.findByMovieSessionId(movieSessionId);
+        if (movieSession == null){
+            throw new MyException("MovieSessionId does not exist!");
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH);
+        String formattedDate = movieSession.getDateOfSession().format(formatter);
+
+        MovieSessionInfoResponse movieSessionInfoResponse = new MovieSessionInfoResponse(
+                movieSession.getMovieId().getName(),
+                movieSession.getCinemaHall().getCinema().getLocalization(),
+                movieSession.getCinemaHall().getCinema().getName(),
+                movieSession.getCinemaHall().getName(),
+                formattedDate,
+                movieSession.getTimeOfSession().toString().substring(0, 5),
+                movieSession.getDictSessionType().getName(),
+                movieSession.isSubtitles()
+        );
+
+        return movieSessionInfoResponse;
     }
 }

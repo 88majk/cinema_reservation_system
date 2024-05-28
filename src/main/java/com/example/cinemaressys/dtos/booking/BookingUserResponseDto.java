@@ -18,6 +18,7 @@ public class BookingUserResponseDto {
     private int bookingNumber;
     private float totalPrice;
     private String cinemaName;
+    private int movieSessionId;
     private String movieName;
     private LocalDate sessionDate;
     private LocalTime sessionTime;
