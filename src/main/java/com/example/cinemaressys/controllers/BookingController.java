@@ -26,7 +26,7 @@ public class BookingController {
     public ResponseEntity<?> createNewBooking(@RequestBody BookingAddBookingRequestDto bookingAddBookingRequestDto) {
         try{
             BookingResponseDto bookingResponseDto = null;
-            if (bookingAddBookingRequestDto.getBookingNumber() == -1) {
+            if (bookingAddBookingRequestDto.getBookingNumber() <= 0) {
                 bookingResponseDto = bookingService.createNewBooking(bookingAddBookingRequestDto);
             }
             else {

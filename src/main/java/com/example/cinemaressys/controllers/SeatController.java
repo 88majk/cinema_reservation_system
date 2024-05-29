@@ -1,6 +1,7 @@
 package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.access.AccessCreateAdminRequestDto;
+import com.example.cinemaressys.dtos.seat.GetSeatRequestDto;
 import com.example.cinemaressys.dtos.seat.ListSeatRequestDto;
 import com.example.cinemaressys.dtos.seat.SeatsResponseDto;
 import com.example.cinemaressys.exception.MyException;
@@ -36,10 +37,12 @@ public class SeatController {
         }
     }
 
-    @GetMapping("/movieSession/{movieSessionId}")
-    public ResponseEntity<?> getSeatsByMovieSessionId(@PathVariable int movieSessionId){
+    @PostMapping("/movieSession/{movieSessionId}")
+    public ResponseEntity<?> getSeatsByMovieSessionId(@PathVariable int movieSessionId,
+                                                      @RequestBody GetSeatRequestDto getSeatRequestDto){
         try{
-            SeatsResponseDto seatsResponseDto = seatService.getSeatsByMovieSessionId(movieSessionId);
+            SeatsResponseDto seatsResponseDto = seatService.getSeatsByMovieSessionId(movieSessionId,
+                    getSeatRequestDto.getBookingId());
             return ResponseEntity.ok().body(seatsResponseDto);
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

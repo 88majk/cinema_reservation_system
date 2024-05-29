@@ -57,10 +57,7 @@ public class SeatServiceImpl implements SeatService{
     }
 
     @Override
-    public SeatsResponseDto getSeatsByMovieSessionId(int movieSessionId) {
-//        insertPrice();
-//        insert100Booking();
-
+    public SeatsResponseDto getSeatsByMovieSessionId(int movieSessionId, int bookingId) {
         MovieSession movieSession = movieSessionRepositories.findByMovieSessionId(movieSessionId);
         if(movieSession == null){
             throw new MyException("movieSession with Id: " + movieSessionId + " not found");
@@ -82,6 +79,12 @@ public class SeatServiceImpl implements SeatService{
         List<Integer> statusIds = Arrays.asList(1, 2);
         List<BookingSeat> bookedSeatsList = bookingSeatRepositories.
                 getByMovieSessionMovieSessionIdAndDictBookingStatusIdIn(movieSessionId, statusIds);
+
+        List<BookingSeat> seatsInBooking = new ArrayList<>();
+        if (bookingId > 0) {
+            seatsInBooking = bookingSeatRepositories.
+                    findByBookingBookingIdAndMovieSessionMovieSessionId(bookingId, movieSessionId);
+        }
 
         Map<Character, List<SeatDto>> rowMap = new HashMap<>();
         List<SeatDto> seatDtoList = new ArrayList<>();
@@ -120,6 +123,22 @@ public class SeatServiceImpl implements SeatService{
                 seatDto.setAvailable(true);
                 seatDto.setBookingStatus(null);
             }
+            if (!seatsInBooking.isEmpty()) {
+                BookingSeat bookingSeatInBooking = null;
+                for (BookingSeat bookingSeat: seatsInBooking) {
+                    if (bookingSeat.getSeat().getSeatId() == seatDto.getSeatId()) {
+                        bookingSeatInBooking = bookingSeat;
+                        break;
+                    }
+                }
+                if (bookingSeatInBooking != null){
+                    seatDto.setInBooking(true);
+                    seatDto.setAvailable(true);
+                }
+                else{
+                    seatDto.setInBooking(false);
+                }
+            }
             seatDto.setRow(seat.getRowNumber());
             seatDtosForRow.add(seatDto);
         }
@@ -145,68 +164,4 @@ public class SeatServiceImpl implements SeatService{
 
         return seatsResponseDto;
     }
-
-    void insert100Booking(){
-        Random random = new Random();
-        for (int i = 1; i < 28; i++) {
-            int bookingNumber = 20000000 + i;
-            int dictBookingStatusId = 2;
-            int userId;
-            do {
-                userId = random.nextInt(1, 11);
-            } while (userId == 3 || userId == 4);
-            Booking booking = new Booking();
-            booking.setBookingNumber(bookingNumber);
-            booking.setUser(userRepositories.findByUserId(userId));
-            booking.setDictBookingStatus(dictBookingStatusRepositories.findByDictBookingStatusId(dictBookingStatusId));
-
-            int howManySeats = random.nextInt(1, 15);
-            MovieSession movieSession = movieSessionRepositories.findByMovieSessionId(i);
-            List<Seat> seatList = seatRepositories.findByCinemaHallCinemaHallId(movieSession.getCinemaHall().getCinemaHallId());
-
-            Collections.shuffle(seatList);
-            List<Seat> randomlySelectedSeats = seatList.subList(0, Math.min(howManySeats, seatList.size()));
-            float sumPrice = 0;
-            List<BookingSeat> bookingSeatList = new ArrayList<>();
-            for (Seat seat : randomlySelectedSeats){
-                BookingSeat bookingSeat = new BookingSeat();
-                bookingSeat.setBooking(booking);
-                bookingSeat.setDictBookingStatus(dictBookingStatusRepositories.findByDictBookingStatusId(random.nextInt(1,3)));
-                bookingSeat.setMovieSession(movieSession);
-                bookingSeat.setSeat(seat);
-                Price price = priceRepositories.findByMovieSessionAndDictSeatClass(movieSession, seat.getDictSeatClass());
-                bookingSeat.setPrice(price);
-                sumPrice += price.getPrice();
-
-                bookingSeatList.add(bookingSeat);
-            }
-            booking.setTotalPrice(sumPrice);
-            bookingRepositories.save(booking);
-            for(BookingSeat bookingSeat : bookingSeatList){
-                bookingSeatRepositories.save(bookingSeat);
-
-            }
-
-        }
-    }
-
-    void insertPrice() {
-        Random random = new Random();
-
-        for (int i = 1; i < 28; i++){
-            MovieSession movieSession = movieSessionRepositories.findByMovieSessionId(i);
-            for (int j = 1 ; j < 4; j++) {
-                DictSeatClass dictSeatClass = dictSeatClassRepositories.findByDictSeatClassId(j);
-                float price = random.nextInt(10, 50);
-                Price newPrice = new Price(
-                        movieSession,
-                        dictSeatClass,
-                        price
-                );
-                priceRepositories.save(newPrice);
-            }
-        }
-    }
-
-
 }

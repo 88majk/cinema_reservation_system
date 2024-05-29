@@ -5,5 +5,5 @@ import com.example.cinemaressys.dtos.seat.SeatsResponseDto;
 
 public interface SeatService {
     void createSeatsInNewHall(ListSeatRequestDto listSeatRequestDto);
-    SeatsResponseDto getSeatsByMovieSessionId(int movieSessionId);
+    SeatsResponseDto getSeatsByMovieSessionId(int movieSessionId, int bookingId);
 }
