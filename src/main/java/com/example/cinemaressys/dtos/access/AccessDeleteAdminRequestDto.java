@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AccessDeleteAdminRequestDto {
+    private String token;
     private String email;
 }
