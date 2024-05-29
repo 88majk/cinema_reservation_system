@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -26,7 +28,7 @@ public class AccessController {
     public ResponseEntity<?> createAdmin(@RequestBody AccessCreateAdminRequestDto accessCreateAdminRequestDto) {
         try {
             accessService.createAdmin(accessCreateAdminRequestDto);
-            return ResponseEntity.ok().body("New admin has been added!");
+            return ResponseEntity.ok().body(Map.of("message", "New admin has been added!"));
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -39,7 +41,7 @@ public class AccessController {
     public ResponseEntity<?> deleteAdmin(@RequestBody AccessDeleteAdminRequestDto accessDeleteAdminRequestDto) {
         try {
             accessService.deleteAdmin(accessDeleteAdminRequestDto);
-            return ResponseEntity.ok().body("Administrator has been deleted!");
+            return ResponseEntity.ok().body(Map.of("message", "Administrator has been deleted!"));
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
