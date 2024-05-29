@@ -15,4 +15,5 @@ public class SeatDto {
     private boolean isAvailable;
     private float price;
     private String bookingStatus;
+    private boolean isInBooking;
 }
