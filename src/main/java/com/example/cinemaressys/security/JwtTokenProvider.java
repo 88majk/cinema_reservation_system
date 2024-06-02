@@ -30,6 +30,11 @@ public class JwtTokenProvider {
 
     public static JwtClaims decodeJwtToken(String token) {
         try {
+
+            if(token.isEmpty()) {
+                throw new MyException("You have to be logged in to perform this action.");
+            }
+
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()

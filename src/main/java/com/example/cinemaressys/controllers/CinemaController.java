@@ -70,7 +70,7 @@ public class CinemaController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, CinemaRequestDto requestDto){
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody CinemaRequestDto requestDto){
         try {
             cinemaService.updateCinema(id, requestDto);
             return ResponseEntity.ok("Cinema with id " + id + " was successfully updated.");
