@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class JwtClaims {
-    private String userId;
+    private String email;
     private String role;
 }

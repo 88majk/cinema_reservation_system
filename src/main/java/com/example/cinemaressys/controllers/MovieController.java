@@ -13,6 +13,7 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movie")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MovieController {
     private final MovieService movieService;
 
@@ -32,6 +33,7 @@ public class MovieController {
     @GetMapping("/all")
     public ResponseEntity<?> getAll(){
         try {
+            //movieService.getMoviesFromApi();
             return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
         } catch (MyException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -42,7 +44,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(int id){
+    public ResponseEntity<?> getById(@PathVariable int id){
         try{
             return ResponseEntity.ok()
                     .body(Objects.requireNonNullElseGet(movieService.getMovie(id),

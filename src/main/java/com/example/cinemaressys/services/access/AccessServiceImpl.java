@@ -2,6 +2,7 @@ package com.example.cinemaressys.services.access;
 
 import com.example.cinemaressys.dtos.access.AccessCreateAdminRequestDto;
 import com.example.cinemaressys.dtos.access.AccessDeleteAdminRequestDto;
+import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.entities.Access;
 import com.example.cinemaressys.entities.Cinema;
 import com.example.cinemaressys.entities.Role;
@@ -11,6 +12,8 @@ import com.example.cinemaressys.repositories.AccessRepositories;
 import com.example.cinemaressys.repositories.CinemaRepositories;
 import com.example.cinemaressys.repositories.RoleRepositories;
 import com.example.cinemaressys.repositories.UserRepositories;
+import com.example.cinemaressys.security.JwtTokenProvider;
+import com.example.cinemaressys.security.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -28,6 +31,18 @@ public class AccessServiceImpl implements AccessService{
 
     @Override
     public void createAdmin(AccessCreateAdminRequestDto accessCreateAdminRequestDto) {
+        if (accessCreateAdminRequestDto.getToken() == null) {
+            throw new MyException("You have to login first!.");
+        }
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(accessCreateAdminRequestDto.getToken());
+        User admin = userRepositories.findUserByEmail(jwtClaims.getEmail());
+        if (admin == null) {
+            throw new MyException("Admin doesn't exist!");
+        }
+        if (!admin.getRole().getName().equals("Administrator")) {
+            throw new MyException("This user dont have admin permission to create admin");
+        }
+
         User user = userRepositories.findUserByEmail(accessCreateAdminRequestDto.getEmail());
         if (user == null) {
             throw new MyException("User with the provided email does not exist. Please register this user first.");
@@ -52,12 +67,12 @@ public class AccessServiceImpl implements AccessService{
             }
         }
         else {
-            if (accessCreateAdminRequestDto.getCinemaName() == null){
+            if (accessCreateAdminRequestDto.getCinemaId() == 0){
                 throw new MyException("First you need to specify the cinema.");
             }
-            Cinema cinema = cinemaRepositories.findCinemaByName(accessCreateAdminRequestDto.getCinemaName());
+            Cinema cinema = cinemaRepositories.getByCinemaId(accessCreateAdminRequestDto.getCinemaId());
             if (cinema == null) {
-                throw new MyException("A cinema with the given name does not exist!");
+                throw new MyException("A cinema with the given id does not exist!");
             }
 
             Role cinemaManagerRole = roleRepositories.findByName("Cinema manager");
@@ -72,6 +87,18 @@ public class AccessServiceImpl implements AccessService{
 
     @Override
     public void deleteAdmin(AccessDeleteAdminRequestDto accessDeleteAdminRequestDto) {
+        if (accessDeleteAdminRequestDto.getToken() == null) {
+            throw new MyException("You have to login first!.");
+        }
+        JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(accessDeleteAdminRequestDto.getToken());
+        User admin = userRepositories.findUserByEmail(jwtClaims.getEmail());
+        if (admin == null) {
+            throw new MyException("Admin doesn't exist!");
+        }
+        if (!admin.getRole().getName().equals("Administrator")) {
+            throw new MyException("This user dont have admin permission to create admin");
+        }
+
         User user = userRepositories.findUserByEmail(accessDeleteAdminRequestDto.getEmail());
         if (user == null) {
             throw new MyException("User with the provided email does not exist.");

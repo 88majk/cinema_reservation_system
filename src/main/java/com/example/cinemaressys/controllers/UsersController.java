@@ -2,8 +2,7 @@ package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
-import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
-import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
+import com.example.cinemaressys.dtos.user.*;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import com.example.cinemaressys.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsersController {
     private final UserService userService;
     @Autowired
@@ -25,13 +25,15 @@ public class UsersController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         try {
-            userService.registerUser(userRegisterRequestDto);
-            return ResponseEntity.ok().body("User registered successfully!");
+            User user = userService.registerUser(userRegisterRequestDto);
+            String token = JwtTokenProvider.generateToken(user);
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok().body(tokenResponse);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred during registration, please try again later.");
+                    .body("An unexpected error occurred during registration, please try again later." + e.getMessage());
         }
     }
 
@@ -40,7 +42,8 @@ public class UsersController {
         try{
             User user = userService.loginUser(userLoginRequestDto);
             String token = JwtTokenProvider.generateToken(user);
-            return ResponseEntity.ok().body(token);
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok().body(tokenResponse);
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){
@@ -53,12 +56,45 @@ public class UsersController {
     public ResponseEntity<?> test(@RequestBody TokenRequestDto token) {
         try{
             JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token.getToken());
-            return ResponseEntity.ok().body(jwtClaims.getUserId()+" "+jwtClaims.getRole());
+            return ResponseEntity.ok().body(new TestTokenResponse(true));
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{token}")
+    public ResponseEntity<?> findUserByToken(@PathVariable String token) {
+        try {
+            UserDTO user = userService.findUserByToken(token);
+            return ResponseEntity.ok().body(user);
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("update/{token}")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequestDto requestDto, @PathVariable String token) {
+        try{
+            userService.updateUserData(requestDto, token);
+            User user = userService.findUserByEmail(requestDto.getEmail());
+            String newToken = JwtTokenProvider.generateToken(user);
+            TokenResponse tokenResponse = new TokenResponse(newToken);
+            return ResponseEntity.ok(tokenResponse);
+        } catch (MyException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("changePassword/{token}")
+    public ResponseEntity<?> updateUserPassword(@RequestBody String password, @PathVariable String token) {
+        try {
+            userService.updateUserPassword(password, token);
+            return ResponseEntity.ok("Users password was updated successfully.");
+        } catch (MyException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

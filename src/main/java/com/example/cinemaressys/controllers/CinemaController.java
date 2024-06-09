@@ -13,6 +13,7 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cinema")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CinemaController {
     private final CinemaService cinemaService;
     @PostMapping("/add")
@@ -69,7 +70,7 @@ public class CinemaController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, CinemaRequestDto requestDto){
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody CinemaRequestDto requestDto){
         try {
             cinemaService.updateCinema(id, requestDto);
             return ResponseEntity.ok("Cinema with id " + id + " was successfully updated.");

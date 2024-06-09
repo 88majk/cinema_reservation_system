@@ -3,6 +3,7 @@ package com.example.cinemaressys.controllers;
 import com.example.cinemaressys.dtos.genre.GenreResponseDto;
 import com.example.cinemaressys.services.genre.GenreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/genre")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class GenreController {
     private final GenreService genreService;
     @GetMapping("/all")

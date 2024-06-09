@@ -10,7 +10,8 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class AccessCreateAdminRequestDto {
+    private String token;
     private String email;
     private boolean allCinema;
-    private String cinemaName;
+    private int cinemaId;
 }
