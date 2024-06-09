@@ -25,8 +25,10 @@ public class UsersController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         try {
-            userService.registerUser(userRegisterRequestDto);
-            return ResponseEntity.ok().body("User registered successfully!");
+            User user = userService.registerUser(userRegisterRequestDto);
+            String token = JwtTokenProvider.generateToken(user);
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok().body(tokenResponse);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -54,7 +56,7 @@ public class UsersController {
     public ResponseEntity<?> test(@RequestBody TokenRequestDto token) {
         try{
             JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token.getToken());
-            return ResponseEntity.ok().body(jwtClaims.getEmail()+" "+jwtClaims.getRole());
+            return ResponseEntity.ok().body(new TestTokenResponse(true));
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){

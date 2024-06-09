@@ -7,7 +7,7 @@ import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
 import com.example.cinemaressys.entities.User;
 
 public interface UserService {
-    void registerUser(UserRegisterRequestDto userRegisterRequestDto);
+    User registerUser(UserRegisterRequestDto userRegisterRequestDto);
     User loginUser(UserLoginRequestDto userLoginRequestDto);
     User findUserByEmail(String email);
     UserDTO findUserByToken(String token);
