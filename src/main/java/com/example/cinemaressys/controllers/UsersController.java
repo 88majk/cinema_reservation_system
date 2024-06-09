@@ -2,10 +2,7 @@ package com.example.cinemaressys.controllers;
 
 import com.example.cinemaressys.dtos.jwt.JwtClaims;
 import com.example.cinemaressys.dtos.jwt.TokenRequestDto;
-import com.example.cinemaressys.dtos.user.TokenResponse;
-import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
-import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
-import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
+import com.example.cinemaressys.dtos.user.*;
 import com.example.cinemaressys.exception.MyException;
 import com.example.cinemaressys.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +25,10 @@ public class UsersController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         try {
-            userService.registerUser(userRegisterRequestDto);
-            return ResponseEntity.ok().body("User registered successfully!");
+            User user = userService.registerUser(userRegisterRequestDto);
+            String token = JwtTokenProvider.generateToken(user);
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok().body(tokenResponse);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -57,7 +56,7 @@ public class UsersController {
     public ResponseEntity<?> test(@RequestBody TokenRequestDto token) {
         try{
             JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token.getToken());
-            return ResponseEntity.ok().body(jwtClaims.getEmail()+" "+jwtClaims.getRole());
+            return ResponseEntity.ok().body(new TestTokenResponse(true));
         } catch(MyException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch(Exception e){

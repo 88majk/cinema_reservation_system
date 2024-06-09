@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     final private UserRepositories userRepositories;
     final private RoleRepositories roleRepositories;
     @Override
-    public void registerUser(UserRegisterRequestDto userRegisterRequestDto) {
+    public User registerUser(UserRegisterRequestDto userRegisterRequestDto) {
         if (userRepositories.existsByEmail(userRegisterRequestDto.getEmail())){
             throw new MyException("Email address already exists. Try to log in.");
         }
@@ -29,13 +29,16 @@ public class UserServiceImpl implements UserService {
             String hashPassword = PasswordEncoder.encodePassword(userRegisterRequestDto.getPassword());
             Role defaultRole = roleRepositories.findByName("User");
 
-            userRepositories.save(new User(userRegisterRequestDto.getName(),
+            User user = new User(userRegisterRequestDto.getName(),
                     userRegisterRequestDto.getSurname(),
                     userRegisterRequestDto.getEmail(),
                     hashPassword,
                     userRegisterRequestDto.getDateOfBirth(),
                     defaultRole
-            ));
+            );
+
+            userRepositories.save(user);
+            return user;
         }
         catch (Exception e){
             throw new MyException("An unexpected error occurred during registration, " +
