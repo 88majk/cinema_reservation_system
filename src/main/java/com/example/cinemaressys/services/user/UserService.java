@@ -13,4 +13,5 @@ public interface UserService {
     UserDTO findUserByToken(String token);
     void updateUserData(UserUpdateRequestDto updateRequest, String token);
     void updateUserPassword(String password, String token);
+    void deleteAccount(String role, String email);
 }
