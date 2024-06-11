@@ -11,4 +11,5 @@ public interface UserService {
     User findUserByEmail(String email);
     void updateUserData(UserUpdateRequestDto updateRequest, String token);
     void updateUserPassword(String password, String token);
+    void deleteAccount(String role, String email);
 }

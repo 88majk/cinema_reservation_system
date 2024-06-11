@@ -33,4 +33,9 @@ public interface BookingRepositories extends JpaRepository<Booking, Integer> {
     @Modifying
     @Query("UPDATE Booking bs SET bs.dictBookingStatus.id = :statusId WHERE bs.bookingId = :bookingId")
     void updateStatusByBookingId(@Param("bookingId") int bookingId, @Param("statusId") int statusId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Booking b WHERE b.bookingId = :bookingId")
+    void deleteByBookingId(@Param("bookingId") int bookingId);
 }

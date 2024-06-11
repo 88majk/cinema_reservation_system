@@ -23,4 +23,9 @@ public interface BookingSeatRepositories extends JpaRepository<BookingSeat, Inte
 
     @Query("SELECT COUNT(bs) > 0 FROM BookingSeat bs WHERE bs.booking.bookingId = :bookingId")
     boolean existsByBookingId(@Param("bookingId") int bookingId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM BookingSeat bs WHERE bs.booking.bookingId = :bookingId")
+    void deleteByBookingBookingId(@Param("bookingId") int bookingId);
 }
