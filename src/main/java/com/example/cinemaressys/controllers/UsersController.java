@@ -72,6 +72,9 @@ public class UsersController {
             return ResponseEntity.ok().body(user);
         } catch (MyException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 
@@ -85,6 +88,9 @@ public class UsersController {
             return ResponseEntity.ok(tokenResponse);
         } catch (MyException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 
@@ -95,6 +101,23 @@ public class UsersController {
             return ResponseEntity.ok("Users password was updated successfully.");
         } catch (MyException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deleteAccount/{token}")
+    public ResponseEntity<?> deleteAccount(@PathVariable String token) {
+        try {
+            JwtClaims jwtClaims = JwtTokenProvider.decodeJwtToken(token);
+            userService.deleteAccount(jwtClaims.getRole(), jwtClaims.getEmail());
+            return ResponseEntity.ok("User was deleted successfully.");
+        } catch (MyException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 }

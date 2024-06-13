@@ -5,21 +5,28 @@ import com.example.cinemaressys.dtos.user.UserDTO;
 import com.example.cinemaressys.dtos.user.UserLoginRequestDto;
 import com.example.cinemaressys.dtos.user.UserRegisterRequestDto;
 import com.example.cinemaressys.dtos.user.UserUpdateRequestDto;
+import com.example.cinemaressys.entities.Booking;
+import com.example.cinemaressys.entities.BookingSeat;
 import com.example.cinemaressys.entities.Role;
 import com.example.cinemaressys.entities.User;
 import com.example.cinemaressys.exception.MyException;
-import com.example.cinemaressys.repositories.RoleRepositories;
-import com.example.cinemaressys.repositories.UserRepositories;
+import com.example.cinemaressys.repositories.*;
 import com.example.cinemaressys.security.JwtTokenProvider;
 import com.example.cinemaressys.security.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     final private UserRepositories userRepositories;
     final private RoleRepositories roleRepositories;
+    final private AccessRepositories accessRepositories;
+    final private BookingRepositories bookingRepositories;
+    final private BookingSeatRepositories bookingSeatRepositories;
+
     @Override
     public User registerUser(UserRegisterRequestDto userRegisterRequestDto) {
         if (userRepositories.existsByEmail(userRegisterRequestDto.getEmail())){
@@ -130,6 +137,47 @@ public class UserServiceImpl implements UserService {
             userRepositories.save(existingUser);
         } else {
             throw new MyException("User with email " + jwtClaims.getEmail() + " not found.");
+        }
+    }
+
+    @Override
+    public void deleteAccount(String roleName, String email) {
+        User user = userRepositories.findUserByEmail(email);
+        if (user == null) {
+            throw new MyException("Such email does not exist");
+        }
+        Role role = roleRepositories.findByName(roleName);
+        if (role == null) {
+            throw new MyException("The user role does not exist.");
+        }
+        if (role.getName().equals("Administrator") || role.getName().equals("Cinema manager")) {
+            try {
+                accessRepositories.deleteByUserUserId(user.getUserId());
+            } catch (Exception e) {
+                throw new MyException("Failed to delete all accesses.");
+            }
+        }
+
+        List<Booking> allBookingByUser = bookingRepositories.getBookingsByUserId(user.getUserId());
+        for (Booking booking : allBookingByUser) {
+            try {
+                bookingSeatRepositories.deleteByBookingBookingId(booking.getBookingId());
+
+            } catch (Exception e) {
+                throw new MyException("Failed to delete all bookingSeat");
+            }
+
+            try {
+                bookingRepositories.deleteByBookingId(booking.getBookingId());
+            } catch (Exception e) {
+                throw new MyException("Failed to delete all booking");
+            }
+        }
+
+        try {
+            userRepositories.deleteByUserId(user.getUserId());
+        } catch (Exception e) {
+            throw new MyException("Failed to delete user");
         }
     }
 }
