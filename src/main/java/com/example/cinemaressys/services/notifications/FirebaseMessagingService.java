@@ -53,7 +53,7 @@ public class FirebaseMessagingService {
                 .setTitle(pushNotification.getNotificationTitle())
                 .setBody(pushNotification.getNotificationMessage())
                 .build();
-        //
+        // xd
 
         MulticastMessage message = MulticastMessage
                 .builder()
