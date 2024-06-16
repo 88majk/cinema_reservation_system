@@ -23,8 +23,8 @@ public class NotificationController {
     }
 
     @PostMapping("/send-by-token/{device_token}")
-    public String sendNotificationByToken(@PathVariable String device_token) {
-        return firebaseMessagingService.sendNotificationByToken(device_token);
+    public String sendNotificationByToken(@PathVariable String device_token, @RequestBody PushNotification pushNotification) {
+        return firebaseMessagingService.sendNotificationByToken(device_token, pushNotification);
     }
 }
 

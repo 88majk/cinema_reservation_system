@@ -21,11 +21,11 @@ public class FirebaseMessagingService {
         this.deviceTokenService = deviceTokenService;
     }
 
-    public String sendNotificationByToken(String deviceToken) {
+    public String sendNotificationByToken(String deviceToken, PushNotification pushNotification) {
         Notification notification = Notification
                 .builder()
-                .setTitle("Ticket confirmation")
-                .setBody("Your reservation has been confirmed!")
+                .setTitle(pushNotification.getNotificationTitle())
+                .setBody(pushNotification.getNotificationMessage())
                 .build();
 
         Message message = Message
@@ -44,28 +44,32 @@ public class FirebaseMessagingService {
 
     public String sendNotificationToAll(PushNotification pushNotification) {
         List<DeviceToken> deviceTokens = deviceTokenService.getAllDeviceTokens();
-        List<String> tokens = deviceTokens.stream()
-                .map(DeviceToken::getDeviceToken)
-                .collect(Collectors.toList());
+        if(!deviceTokens.isEmpty()) {
+            List<String> tokens = deviceTokens.stream()
+                    .map(DeviceToken::getDeviceToken)
+                    .collect(Collectors.toList());
 
-        Notification notification = Notification
-                .builder()
-                .setTitle(pushNotification.getNotificationTitle())
-                .setBody(pushNotification.getNotificationMessage())
-                .build();
-        // xd
+            Notification notification = Notification
+                    .builder()
+                    .setTitle(pushNotification.getNotificationTitle())
+                    .setBody(pushNotification.getNotificationMessage())
+                    .build();
 
-        MulticastMessage message = MulticastMessage
-                .builder()
-                .setNotification(notification)
-                .addAllTokens(tokens)
-                .build();
+            MulticastMessage message = MulticastMessage
+                    .builder()
+                    .setNotification(notification)
+                    .addAllTokens(tokens)
+                    .build();
 
-        try {
-            firebaseMessaging.sendMulticast(message);
-            return "Success sending notification to all tokens";
-        } catch (FirebaseMessagingException e) {
-            return "Error sending notification to all tokens";
+
+            try {
+                firebaseMessaging.sendMulticast(message);
+                return "Success sending notification to all tokens";
+            } catch (FirebaseMessagingException e) {
+                return "Error sending notification to all tokens";
+            }
+        } else {
+            return "There is not any token in database";
         }
     }
 }
